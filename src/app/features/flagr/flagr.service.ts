@@ -1,63 +1,28 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
-import { FlagrConfig, FLAGR_CONFIGURATION } from "./flagr.module";
-
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { FlagrConfig, FLAGR_CONFIGURATION } from './flagr.module';
+import { FlagrEvaluationRequest, FlagrEvaluationResponse } from './types';
 
 @Injectable()
 export class FlagrService {
-
+  private url: string;
   constructor(
-    private httpClient:HttpClient,
-    @Inject(FLAGR_CONFIGURATION)  private flagrConfig:FlagrConfig) {
-   // console.log(flagrConfig.serverUrl, 'SERVER URL');
-  }
-
-  fetchFlag(
-    flagRequest: FlagrEvaluationRequest
+    private httpClient: HttpClient,
+    @Inject(FLAGR_CONFIGURATION) private flagrConfig: FlagrConfig
   ) {
-    return this.httpClient.post<FlagrEvaluationResponse>(`${this.flagrConfig.serverUrl}/api/v1/evaluation`,flagRequest )
+    this.url = flagrConfig.serverUrl;
   }
+
+  // doFlagLookup<ContextType>(
+  //   flagRequest: FlagrEvaluationRequest<ContextType>,
+  //   predicate: (p: FlagrEvaluationResponse) => boolean
+  // ): Observable<boolean> {
+  //   return this.httpClient
+  //     .post<FlagrEvaluationResponse>(
+  //       `${this.url}/api/v1/evaluation`,
+  //       flagRequest
+  //     )
+  //     .pipe(map((r) => predicate(r)));
+  // }
 }
-
-
-export interface FlagrEvaluationRequest {
-  /** entityID is used to deterministically at random to evaluate the flag result. If it's empty, flagr will randomly generate one. */
-  entityID?: string,
-  entityType?: string,
-  entityContext?: any,
-  enableDebug?: boolean,
-  /** >=1 Set either this or the flag key */
-  flagID?: number,
-  /** Set either this or the flagId */
-  flagKey?: string,
-  flagTags?: string[]
-  flagTagsOperator?: 'ANY' | 'ALL'
-  }
-
-  export interface FlagrEvaluationResponse {
-    flagID?: number,
-    flagKey?: string,
-    flagSnapshotID?: number,
-    segmentID?: number,
-    variantID?: number,
-    variantKey?: string,
-    variantAttachment?: any,
-    evalContext?: {
-      entityID?: string,
-      entityType?: string,
-      entityContext?: any,
-      enableDebug?: boolean,
-      flagID?: number,
-      flagKey?: string,
-      flagTags?: string[],
-      flagTagsOperator?: string
-    },
-    timestamp?: string,
-    evalDebugLog?: {
-      segmentDebugLogs?:  {
-        segmentID?: number,
-        msg?: string
-      }[],
-      msg?: string
-    }
-  }

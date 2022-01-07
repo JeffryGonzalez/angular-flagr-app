@@ -1,3 +1,8 @@
-<h1>Flagr FTW</h1>
+<div *ngFor="let result of data$ | async">
+  <p>Description: {{ result.description }}</p>
+  <p>Id: {{ result.id }}</p>
+</div>
 
-<pre>{{ flag$ | async | json }}</pre>
+<div>
+  <pre> {{ data$ | async | json }}</pre>
+</div>
