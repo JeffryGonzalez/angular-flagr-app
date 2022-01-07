@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FlagrService } from './features/flagr/flagr.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angular-flagr-app';
+  flag$ = this.flagr.fetchFlag({
+    flagKey: 'coursesReady',
+    enableDebug: false
+  });
+  constructor(private flagr:FlagrService) {
+
+  }
 }
